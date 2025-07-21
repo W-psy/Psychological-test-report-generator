@@ -1,0 +1,37 @@
+# 心理测试反馈报告生成器 - 依赖包列表
+
+# GUI框架
+tkinter  # Python内置，无需安装
+
+# PDF生成相关
+reportlab==4.0.7
+
+# 数据处理
+pandas==2.1.4
+openpyxl==3.1.2  # Excel文件读取支持
+
+# 图像处理
+Pillow==10.1.0
+
+# 图表生成
+matplotlib==3.8.2
+
+# 日期处理
+python-dateutil==2.8.2
+
+# 路径处理
+pathlib  # Python内置，无需安装
+
+# 打包工具
+pyinstaller==6.3.0
+
+# 现代GUI主题（可选，用于美化界面）
+customtkinter==5.2.2
+tkinter-tooltip==2.1.0
+
+# 系统相关
+psutil==5.9.6  # 系统信息获取
+
+# 配置文件处理
+configparser  # Python内置，无需安装
+json  # Python内置，无需安装
