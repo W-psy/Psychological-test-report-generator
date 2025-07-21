@@ -1,24 +1,24 @@
 @echo off
 chcp 65001 >nul
-title 版本管理工具
+title Version Manager
 
 echo.
 echo ==========================================
-echo           版本管理工具
+echo           Version Management Tool
 echo ==========================================
 echo.
 
 :menu
-echo 请选择操作：
+echo Please select an option:
 echo.
-echo 1. 查看当前版本状态
-echo 2. 更新版本号
-echo 3. 创建Git标签
-echo 4. 构建可执行文件
-echo 5. 完整发布流程
-echo 6. 退出
+echo 1. View current version status
+echo 2. Update version number
+echo 3. Create Git tag
+echo 4. Build executable
+echo 5. Complete release process
+echo 6. Exit
 echo.
-set /p choice=请输入选项 (1-6): 
+set /p choice=Enter option (1-6): 
 
 if "%choice%"=="1" goto status
 if "%choice%"=="2" goto update
@@ -26,12 +26,12 @@ if "%choice%"=="3" goto tag
 if "%choice%"=="4" goto build
 if "%choice%"=="5" goto release
 if "%choice%"=="6" goto exit
-echo 无效选项，请重新选择
+echo Invalid option, please try again
 goto menu
 
 :status
 echo.
-echo 📋 当前版本状态：
+echo Current version status:
 python scripts\version_manager.py status
 echo.
 pause
@@ -39,8 +39,8 @@ goto menu
 
 :update
 echo.
-set /p version=请输入新版本号 (例如: 1.1.0): 
-set /p desc=请输入版本描述 (可选): 
+set /p version=Enter new version number (e.g. 1.1.0): 
+set /p desc=Enter version description (optional): 
 echo.
 python scripts\version_manager.py update %version% "%desc%"
 echo.
@@ -49,8 +49,8 @@ goto menu
 
 :tag
 echo.
-set /p version=请输入版本号: 
-set /p message=请输入标签消息 (可选): 
+set /p version=Enter version number: 
+set /p message=Enter tag message (optional): 
 echo.
 python scripts\version_manager.py tag %version% "%message%"
 echo.
@@ -66,15 +66,15 @@ goto menu
 
 :release
 echo.
-set /p version=请输入发布版本号: 
-set /p desc=请输入发布描述: 
+set /p version=Enter release version number: 
+set /p desc=Enter release description: 
 echo.
-echo ⚠️  警告：这将执行完整的发布流程
-echo    - 更新版本号
-echo    - 创建Git提交和标签
-echo    - 构建可执行文件
+echo WARNING: This will execute the complete release process
+echo    - Update version number
+echo    - Create Git commit and tag
+echo    - Build executable
 echo.
-set /p confirm=确认继续？(y/N): 
+set /p confirm=Confirm to continue? (y/N): 
 if /i not "%confirm%"=="y" goto menu
 
 python scripts\version_manager.py release %version% "%desc%"
@@ -84,16 +84,16 @@ goto menu
 
 :exit
 echo.
-echo 👋 再见！
+echo Goodbye!
 timeout /t 2 >nul
 exit
 
 :error
 echo.
-echo ❌ 发生错误，请检查：
-echo    1. 是否安装了Python
-echo    2. 是否在正确的项目目录中
-echo    3. 是否安装了Git
+echo Error occurred, please check:
+echo    1. Is Python installed?
+echo    2. Are you in the correct project directory?
+echo    3. Is Git installed?
 echo.
 pause
 goto menu
