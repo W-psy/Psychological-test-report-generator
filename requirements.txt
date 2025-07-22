@@ -1,23 +1,32 @@
 # Psychological Test Report Generator - Dependencies
+# Compatible with Python 3.12
 
 # PDF generation
-reportlab==3.6.0
+reportlab==4.0.8
 
 # Data processing
-pandas==1.3.5
-openpyxl==3.0.10
+pandas==2.1.4
+openpyxl==3.1.2
 
 # Image processing
-Pillow==8.4.0
+Pillow==10.1.0
 
 # Chart generation
-matplotlib==3.5.3
+matplotlib==3.8.2
+numpy==1.26.2
 
 # Date processing
 python-dateutil==2.8.2
 
 # Packaging tool
-pyinstaller==5.13.2
+pyinstaller==6.3.0
 
 # System related
 psutil==5.9.6
+
+# GUI framework (already included in Python 3.12)
+# tkinter - built-in
+
+# Additional dependencies for PyInstaller
+altgraph==0.17.4
+pyinstaller-hooks-contrib==2023.10
