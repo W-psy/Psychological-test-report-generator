@@ -20,7 +20,7 @@ from reportlab.lib.units import cm
 from pathlib import Path
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 import logging
 from typing import Dict, Any, Optional, Callable
 import io
@@ -130,14 +130,20 @@ class ReportStyleManager:
             textColor=colors.black
         ))
 
-        # 特别说明样式
+        # 结果说明样式
         self.styles.add(ParagraphStyle(
             name='note_style',
             parent=self.styles['Normal'],
             fontName="SimKai",
-            fontSize=12,
-            leading=12,
+            fontSize=11,
+            leading=14,
             textColor=colors.black,
+            alignment=TA_LEFT,
+            wordWrap='CJK',  # 支持中文换行
+            leftIndent=0,
+            rightIndent=0,
+            spaceAfter=0,
+            spaceBefore=0
         ))
 
 
@@ -145,7 +151,8 @@ class ReportGenerator:
     """心理测试反馈报告生成器"""
     
     def __init__(self, task_config: Dict = None, evaluation_dict: Dict = None, 
-                 report_title: str = "心理测试反馈报告"):
+                 report_title: str = "心理测试反馈报告", 
+                 disclaimer: str = "测试结果与受试者当时的状态有关，良好状态下的评估结果更可靠。"):
         """
         初始化报告生成器
         
@@ -153,6 +160,7 @@ class ReportGenerator:
             task_config: 任务配置字典
             evaluation_dict: 评价规则字典
             report_title: 报告标题
+            disclaimer: 结果说明
         """
         self.font_manager = FontManager()
         self.font_manager.register_chinese_fonts()
@@ -165,6 +173,7 @@ class ReportGenerator:
         self.task_config = task_config or self._get_default_task_config()
         self.evaluation_dict = evaluation_dict or self._get_default_evaluation_dict()
         self.report_title = report_title  # 添加可自定义的报告标题
+        self.disclaimer = disclaimer  # 添加可自定义的结果说明
         
         # 更新雷达图生成器的变量列表
         all_variables = self.task_config["常规任务"] + self.task_config["特殊任务"]
@@ -240,7 +249,7 @@ class ReportGenerator:
     def _build_header(self, row: pd.Series, image_dir: Path = None) -> Table:
         """构建报告头部 - 规范化个人信息表格"""
         
-        # 规范化个人信息字段，按指定顺序：姓名、ID编号、出生日期、年龄、测试日期、特别说明
+        # 规范化个人信息字段，按指定顺序：姓名、ID编号、出生日期、年龄、测试日期、结果说明
         def get_field_value(field_name, default="-"):
             """获取字段值，如果不存在或为空则返回默认值"""
             if field_name in row and pd.notna(row[field_name]) and str(row[field_name]).strip():
@@ -263,16 +272,15 @@ class ReportGenerator:
             ["出生日期", get_field_value('生日')],
             ["年　　龄", age_value],
             ["测试日期", get_field_value('测试日期')],
-            ["特别说明", get_field_value('特别说明', 
-                                    "请注意，心理测验可能存在误差，结果仅供参考，不作为诊断依据。儿童实际情况还应结合其日常生活表现判断。")]
+            ["结果说明", get_field_value('结果说明', self.disclaimer)]
         ]
         
-        # 处理特别说明的格式
+        # 处理结果说明的格式
         special_note = info_data[-1][1]
-        if len(special_note) > 30:  # 如果特别说明较长，使用段落格式
+        if len(special_note) > 20:  # 如果结果说明较长，使用段落格式（降低阈值确保换行）
             info_data[-1][1] = Paragraph(special_note, self.style_manager.styles['note_style'])
               
-        row_heights = [1.2 * cm] * 5 + [2.0 * cm]  # 特别说明行高度为2.0cm，总高度为8cm匹配雷达图
+        row_heights = [1.2 * cm] * 5 + [2.0 * cm]  # 结果说明行高度为2.0cm，总高度为8cm匹配雷达图
         
         info_table = Table(
             info_data,
@@ -284,8 +292,8 @@ class ReportGenerator:
                 ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#D3DFEE')),
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # 所有单元格垂直居中
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),   # 所有单元格水平居中
-                ('ALIGN', (0, -1), (0, -1), 'CENTER'),   # 特别说明标签也居中
-                ('ALIGN', (1, -1), (1, -1), 'LEFT'),     # 特别说明内容左对齐
+                ('ALIGN', (0, -1), (0, -1), 'CENTER'),   # 结果说明标签也居中
+                ('ALIGN', (1, -1), (1, -1), 'LEFT'),     # 结果说明内容左对齐
                 ('LEADING', (0, 0), (-1, -1), 18),       # 行间距
             ])
         )
@@ -349,7 +357,7 @@ class ReportGenerator:
             self.logger.info(f"动态读取评价变量（从第7列开始）: {score_columns}")
         else:
             # 如果列数不足7列，使用传统方法
-            score_columns = [col for col in row.index if col not in ['姓名', 'ID', '生日', '年龄', '测试日期', '特别说明', '性别']]
+            score_columns = [col for col in row.index if col not in ['姓名', 'ID', '生日', '年龄', '测试日期', '结果说明', '性别']]
             self.logger.warning(f"列数不足7列，使用传统方法筛选变量: {score_columns}")
         
         # 判断是否为文本类型（风格）数据

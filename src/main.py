@@ -78,7 +78,8 @@ class ReportGeneratorGUI:
         self.report_generator = ReportGenerator(
             task_config=self.config_manager.get_task_config(),
             evaluation_dict=self.config_manager.get_evaluation_dict(),
-            report_title=self.report_title_var.get()
+            report_title=self.report_title_var.get(),
+            disclaimer=self.disclaimer_var.get()
         )
         
     def setup_window(self):
@@ -112,6 +113,9 @@ class ReportGeneratorGUI:
         
         # 新增：报告标题设置
         self.report_title_var = tk.StringVar(value="心理测试反馈报告")
+        
+        # 新增：结果说明设置
+        self.disclaimer_var = tk.StringVar(value="测试结果与受试者当时的状态有关，良好状态下的评估结果更可靠。")
         
         # 生成状态
         self.is_generating = False
@@ -185,6 +189,19 @@ class ReportGeneratorGUI:
         ttk.Label(settings_frame, text="报告标题:").grid(row=0, column=0, sticky=tk.W, pady=2)
         ttk.Entry(settings_frame, textvariable=self.report_title_var, width=60).grid(
             row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 5), pady=2)
+        
+        # 结果说明
+        ttk.Label(settings_frame, text="结果说明:").grid(row=1, column=0, sticky=(tk.W, tk.N), pady=2)
+        disclaimer_text = tk.Text(settings_frame, height=3, width=60, wrap=tk.WORD)
+        disclaimer_text.grid(row=1, column=1, sticky=(tk.W, tk.E), padx=(10, 5), pady=2)
+        disclaimer_text.insert(tk.END, self.disclaimer_var.get())
+        
+        # 绑定文本框变化事件
+        def on_disclaimer_change(event=None):
+            self.disclaimer_var.set(disclaimer_text.get("1.0", tk.END).strip())
+        
+        disclaimer_text.bind('<KeyRelease>', on_disclaimer_change)
+        disclaimer_text.bind('<FocusOut>', on_disclaimer_change)
     
     def create_action_area(self, parent):
         """创建操作按钮区域"""
@@ -401,6 +418,7 @@ class ReportGeneratorGUI:
         try:
             # 更新报告生成器的设置
             self.report_generator.report_title = self.report_title_var.get()
+            self.report_generator.disclaimer = self.disclaimer_var.get()
             
             # 创建进度回调
             def progress_callback(progress, message):

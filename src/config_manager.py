@@ -41,7 +41,7 @@ class ConfigManager:
         
         Excel文件格式要求：
         - 第一列：测评项目名称
-        - 第二列开始：阈值列（可以有多个，支持2-5档）
+        - 第二列开始：阈值列（可以有多个，支持2-7档）
         - 最后几列：对应档次的评价说明
         
         支持的分档模式：
@@ -49,6 +49,8 @@ class ConfigManager:
         - 3档：阈值1 | 阈值2 | 低分说明 | 中等分说明 | 高分说明
         - 4档：阈值1 | 阈值2 | 阈值3 | 很低说明 | 低分说明 | 中等分说明 | 高分说明
         - 5档：阈值1 | 阈值2 | 阈值3 | 阈值4 | 很低说明 | 低分说明 | 中等分说明 | 高分说明 | 很高说明
+        - 6档：阈值1 | 阈值2 | 阈值3 | 阈值4 | 阈值5 | 极低说明 | 低分说明 | 中低说明 | 中高说明 | 高分说明 | 极高说明
+        - 7档：阈值1 | 阈值2 | 阈值3 | 阈值4 | 阈值5 | 阈值6 | 极低说明 | 低分说明 | 中低说明 | 中等说明 | 中高说明 | 高分说明 | 极高说明
         
         Args:
             file_path: Excel文件路径
@@ -93,8 +95,20 @@ class ConfigManager:
                 df.columns = ['测评项目', '阈值1', '阈值2', '阈值3', '阈值4', '很低说明', '低分说明', '中等分说明', '高分说明', '很高说明']
                 level_names = ['very_low', 'low', 'mid', 'high', 'very_high']
                 level_labels = ['很低说明', '低分说明', '中等分说明', '高分说明', '很高说明']
+            elif col_count == 12:  # 6档模式
+                level_count = 6
+                threshold_count = 5
+                df.columns = ['测评项目', '阈值1', '阈值2', '阈值3', '阈值4', '阈值5', '极低说明', '低分说明', '中低说明', '中高说明', '高分说明', '极高说明']
+                level_names = ['extremely_low', 'low', 'mid_low', 'mid_high', 'high', 'extremely_high']
+                level_labels = ['极低说明', '低分说明', '中低说明', '中高说明', '高分说明', '极高说明']
+            elif col_count == 14:  # 7档模式
+                level_count = 7
+                threshold_count = 6
+                df.columns = ['测评项目', '阈值1', '阈值2', '阈值3', '阈值4', '阈值5', '阈值6', '极低说明', '低分说明', '中低说明', '中等说明', '中高说明', '高分说明', '极高说明']
+                level_names = ['extremely_low', 'low', 'mid_low', 'mid', 'mid_high', 'high', 'extremely_high']
+                level_labels = ['极低说明', '低分说明', '中低说明', '中等说明', '中高说明', '高分说明', '极高说明']
             else:
-                raise ValueError(f"不支持的列数：{col_count}。支持的格式：4列(2档)、6列(3档)、8列(4档)、10列(5档)")
+                raise ValueError(f"不支持的列数：{col_count}。支持的格式：4列(2档)、6列(3档)、8列(4档)、10列(5档)、12列(6档)、14列(7档)")
             
             # 验证数据
             for idx, row in df.iterrows():
@@ -406,11 +420,13 @@ class ConfigDialog:
         
         # 添加级别说明列
         level_labels = {
+            'extremely_low': '极低说明',
             'very_low': '很低说明',
             'low': '低分说明', 
             'mid': '中等分说明',
             'high': '高分说明',
-            'very_high': '很高说明'
+            'very_high': '很高说明',
+            'extremely_high': '极高说明'
         }
         
         for level_name in level_names:

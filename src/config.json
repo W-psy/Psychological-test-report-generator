@@ -6,9 +6,9 @@
     "theme": "light"
   },
   "paths": {
-    "last_data_file": "E:/Desktop/Processing/杜氏肌无力反馈/反馈V3/杜氏肌无力反馈.xlsx",
+    "last_data_file": "",
     "last_image_dir": "",
-    "last_output_dir": "E:/Desktop/Processing/杜氏肌无力反馈/反馈V3",
+    "last_output_dir": "",
     "default_output_dir": "./reports"
   },
   "report": {

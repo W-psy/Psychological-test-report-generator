@@ -21,7 +21,7 @@ class Config:
         return {
             "app": {
                 "title": "心理测试反馈报告生成器",
-                "version": "1.0.0",
+                "version": "1.0.1",
                 "window_size": "1000x700",
                 "theme": "light"
             },
