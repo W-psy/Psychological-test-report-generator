@@ -1,10 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
-title Report Generator V1.0.0
+title Report Generator V1.0.2
 
 echo.
 echo ========================================
-echo   Report Generator V1.0.0
+echo   Report Generator V1.0.2
 echo ========================================
 echo.
 
