@@ -1,14 +1,14 @@
 {
   "app": {
     "title": "心理测试反馈报告生成器",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "window_size": "1000x700",
     "theme": "light"
   },
   "paths": {
     "last_data_file": "E:/Desktop/Processing/杜氏肌无力反馈/反馈V3/杜氏肌无力反馈.xlsx",
     "last_image_dir": "",
-    "last_output_dir": "E:/Desktop/Processing/杜氏肌无力反馈/反馈V3",
+    "last_output_dir": "E:/Desktop/Processing/杜氏肌无力反馈/反馈V3/杜氏肌无力反馈V3",
     "default_output_dir": "./reports"
   },
   "report": {

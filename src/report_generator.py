@@ -491,7 +491,9 @@ class ReportGenerator:
             return False
     
     def generate_batch_reports(self, data_file: str, output_dir: str, image_dir: str = None,
-                             progress_callback: Optional[Callable] = None) -> Dict[str, Any]:
+                             progress_callback: Optional[Callable] = None,
+                             filename_mode: str = "name_custom",
+                             filename_separator: str = "心理测评") -> Dict[str, Any]:
         """
         批量生成报告
         
@@ -500,6 +502,8 @@ class ReportGenerator:
             output_dir: 输出目录路径
             image_dir: 图片目录路径（可选，用于向后兼容）
             progress_callback: 进度回调函数
+            filename_mode: 文件命名模式 ("id_only" 或 "name_custom")
+            filename_separator: 自定义分隔符（仅在name_custom模式下使用）
             
         Returns:
             Dict: 生成结果统计
@@ -533,21 +537,34 @@ class ReportGenerator:
             # 逐个生成报告
             for index, (_, row) in enumerate(df.iterrows()):
                 try:
-                    # 生成安全的文件名 - 处理姓名为空的情况
-                    name_value = row.get('姓名', '')
-                    if pd.isna(name_value) or not str(name_value).strip():
-                        # 如果姓名为空，使用ID或行号
+                    # 根据命名模式生成文件名
+                    if filename_mode == "id_only":
+                        # 模式1：仅使用ID号
                         id_value = row.get('ID', '')
                         if pd.notna(id_value) and str(id_value).strip():
-                            safe_name = f"ID_{str(id_value).strip()}"
+                            safe_name = str(id_value).strip()
                         else:
+                            # 如果ID为空，使用行号
                             safe_name = f"报告_{index + 1}"
+                        output_file = output_path / f"{safe_name}.pdf"
                     else:
-                        safe_name = "".join(c for c in str(name_value) if c.isalnum() or c in (' ', '-', '_')).rstrip()
-                        if not safe_name:  # 如果处理后为空
-                            safe_name = f"报告_{index + 1}"
-                    
-                    output_file = output_path / f"{safe_name}心理测评报告.pdf"
+                        # 模式2：姓名+自定义内容+报告
+                        name_value = row.get('姓名', '')
+                        if pd.isna(name_value) or not str(name_value).strip():
+                            # 如果姓名为空，使用ID或行号
+                            id_value = row.get('ID', '')
+                            if pd.notna(id_value) and str(id_value).strip():
+                                safe_name = f"ID_{str(id_value).strip()}"
+                            else:
+                                safe_name = f"报告_{index + 1}"
+                        else:
+                            safe_name = "".join(c for c in str(name_value) if c.isalnum() or c in (' ', '-', '_')).rstrip()
+                            if not safe_name:  # 如果处理后为空
+                                safe_name = f"报告_{index + 1}"
+                        
+                        # 构建完整文件名：姓名+分隔符+报告
+                        separator = filename_separator.strip() if filename_separator.strip() else "心理测评"
+                        output_file = output_path / f"{safe_name}{separator}报告.pdf"
                     
                     # 生成报告
                     if self.generate_single_report(row, str(output_file), image_dir):
@@ -558,8 +575,12 @@ class ReportGenerator:
                         error_name = safe_name if safe_name else "未知"
                         results["errors"].append(f"{error_name}: 生成失败")
                     
-                    # 更新进度 - 安全获取姓名
-                    progress_name = safe_name if safe_name else f"第{index + 1}个"
+                    # 更新进度 - 根据命名模式获取显示名称
+                    if filename_mode == "id_only":
+                        progress_name = safe_name
+                    else:
+                        progress_name = safe_name if safe_name else f"第{index + 1}个"
+                    
                     if progress_callback:
                         progress = (index + 1) / results["total"] * 100
                         progress_callback(progress, f"已完成: {progress_name}")

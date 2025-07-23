@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "心理测试反馈报告生成器",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "window_size": "1000x700",
     "theme": "light"
   },

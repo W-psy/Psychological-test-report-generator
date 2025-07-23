@@ -117,6 +117,10 @@ class ReportGeneratorGUI:
         # 新增：结果说明设置
         self.disclaimer_var = tk.StringVar(value="测试结果与受试者当时的状态有关，良好状态下的评估结果更可靠。")
         
+        # 新增：文件命名设置
+        self.filename_mode_var = tk.StringVar(value="name_custom")  # "id_only" 或 "name_custom"
+        self.filename_separator_var = tk.StringVar(value="心理测评")  # 自定义分隔符
+        
         # 生成状态
         self.is_generating = False
         self.generation_thread = None
@@ -202,6 +206,26 @@ class ReportGeneratorGUI:
         
         disclaimer_text.bind('<KeyRelease>', on_disclaimer_change)
         disclaimer_text.bind('<FocusOut>', on_disclaimer_change)
+        
+        # 文件命名设置
+        ttk.Label(settings_frame, text="文件命名:").grid(row=2, column=0, sticky=tk.W, pady=2)
+        filename_frame = ttk.Frame(settings_frame)
+        filename_frame.grid(row=2, column=1, sticky=(tk.W, tk.E), padx=(10, 5), pady=2)
+        
+        # 命名模式选择
+        ttk.Radiobutton(filename_frame, text="使用ID号", variable=self.filename_mode_var, 
+                       value="id_only").grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
+        ttk.Radiobutton(filename_frame, text="姓名+自定义内容+报告", variable=self.filename_mode_var, 
+                       value="name_custom").grid(row=0, column=1, sticky=tk.W)
+        
+        # 自定义内容输入框
+        custom_frame = ttk.Frame(filename_frame)
+        custom_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        ttk.Label(custom_frame, text="自定义内容:").grid(row=0, column=0, sticky=tk.W)
+        ttk.Entry(custom_frame, textvariable=self.filename_separator_var, width=20).grid(
+            row=0, column=1, sticky=tk.W, padx=(5, 0))
+        ttk.Label(custom_frame, text="(仅在选择第二种模式时生效)").grid(
+            row=0, column=2, sticky=tk.W, padx=(5, 0))
     
     def create_action_area(self, parent):
         """创建操作按钮区域"""
@@ -430,7 +454,9 @@ class ReportGeneratorGUI:
                 data_file=self.data_file_var.get(),
                 image_dir=image_dir,
                 output_dir=self.output_dir_var.get(),
-                progress_callback=progress_callback
+                progress_callback=progress_callback,
+                filename_mode=self.filename_mode_var.get(),
+                filename_separator=self.filename_separator_var.get()
             )
             
             # 显示结果
