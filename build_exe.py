@@ -7,7 +7,7 @@
 项目信息:
 - 项目名称: 心理测试反馈报告生成器
 - 版本: 1.0.2
-- 发布日期: 2025-07-22
+- 发布日期: 2025-07-23
 - Python版本要求: >=3.12（推荐使用Python 3.12.7）
 - 主要功能: 专业的心理测评数据分析工具，自动生成包含高质量雷达图的个性化PDF报告
 
@@ -190,6 +190,9 @@ class PyInstallerBuilder:
         """创建PyInstaller spec文件"""
         print("📝 创建PyInstaller spec文件...")
         
+        app_name = self.version_info.get("name", "心理测试反馈报告生成器")
+        app_version = self.version_info.get("version", "1.0.2")
+        
         spec_content = f'''
 # -*- mode: python ; coding: utf-8 -*-
 
@@ -206,6 +209,13 @@ added_files = [
 
 # 隐藏导入模块
 hiddenimports = [
+    # src目录下的模块
+    'config',
+    'utils',
+    'report_generator',
+    'config_manager',
+    'radar_chart',
+    # 第三方库
     'pandas',
     'numpy',
     'matplotlib',
@@ -247,7 +257,7 @@ excludedimports = [
 
 a = Analysis(
     ['src/main.py'],
-    pathex=[],
+    pathex=['src'],  # 添加src目录到Python路径
     binaries=[],
     datas=added_files,
     hiddenimports=hiddenimports,
@@ -270,7 +280,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='{self.version_info.get("name", "心理测试反馈报告生成器")}_v{self.version_info.get("version", "1.0.2")}',
+    name='{app_name}_v{app_version}',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
