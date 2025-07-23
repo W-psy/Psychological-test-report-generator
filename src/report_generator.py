@@ -493,7 +493,7 @@ class ReportGenerator:
     def generate_batch_reports(self, data_file: str, output_dir: str, image_dir: str = None,
                              progress_callback: Optional[Callable] = None,
                              filename_mode: str = "name_custom",
-                             filename_separator: str = "心理测评") -> Dict[str, Any]:
+                             filename_separator: str = "") -> Dict[str, Any]:
         """
         批量生成报告
         
@@ -502,8 +502,10 @@ class ReportGenerator:
             output_dir: 输出目录路径
             image_dir: 图片目录路径（可选，用于向后兼容）
             progress_callback: 进度回调函数
-            filename_mode: 文件命名模式 ("id_only" 或 "name_custom")
-            filename_separator: 自定义分隔符（仅在name_custom模式下使用）
+            filename_mode: 文件命名模式 
+                - "id_only": ID[自定义内容]报告.pdf
+                - "name_custom": 姓名[自定义内容]报告.pdf（如果姓名为空则使用ID）
+            filename_separator: 自定义内容（放在方括号[]中）
             
         Returns:
             Dict: 生成结果统计
@@ -539,32 +541,43 @@ class ReportGenerator:
                 try:
                     # 根据命名模式生成文件名
                     if filename_mode == "id_only":
-                        # 模式1：仅使用ID号
+                        # 模式1：ID[自定义内容]报告
                         id_value = row.get('ID', '')
                         if pd.notna(id_value) and str(id_value).strip():
-                            safe_name = str(id_value).strip()
+                            base_name = str(id_value).strip()
                         else:
                             # 如果ID为空，使用行号
-                            safe_name = f"报告_{index + 1}"
-                        output_file = output_path / f"{safe_name}.pdf"
+                            base_name = f"报告_{index + 1}"
+                        
+                        # 构建文件名：ID[自定义内容]报告.pdf
+                        custom_content = filename_separator.strip() if filename_separator.strip() else ""
+                        if custom_content:
+                            filename = f"{base_name}[{custom_content}]报告.pdf"
+                        else:
+                            filename = f"{base_name}[]报告.pdf"
+                        output_file = output_path / filename
                     else:
-                        # 模式2：姓名+自定义内容+报告
+                        # 模式2：姓名[自定义内容]报告
                         name_value = row.get('姓名', '')
                         if pd.isna(name_value) or not str(name_value).strip():
-                            # 如果姓名为空，使用ID或行号
+                            # 如果姓名为空，使用ID
                             id_value = row.get('ID', '')
                             if pd.notna(id_value) and str(id_value).strip():
-                                safe_name = f"ID_{str(id_value).strip()}"
+                                base_name = str(id_value).strip()
                             else:
-                                safe_name = f"报告_{index + 1}"
+                                base_name = f"报告_{index + 1}"
                         else:
-                            safe_name = "".join(c for c in str(name_value) if c.isalnum() or c in (' ', '-', '_')).rstrip()
-                            if not safe_name:  # 如果处理后为空
-                                safe_name = f"报告_{index + 1}"
+                            base_name = "".join(c for c in str(name_value) if c.isalnum() or c in (' ', '-', '_')).rstrip()
+                            if not base_name:  # 如果处理后为空
+                                base_name = f"报告_{index + 1}"
                         
-                        # 构建完整文件名：姓名+分隔符+报告
-                        separator = filename_separator.strip() if filename_separator.strip() else "心理测评"
-                        output_file = output_path / f"{safe_name}{separator}报告.pdf"
+                        # 构建文件名：姓名[自定义内容]报告.pdf
+                        custom_content = filename_separator.strip() if filename_separator.strip() else ""
+                        if custom_content:
+                            filename = f"{base_name}[{custom_content}]报告.pdf"
+                        else:
+                            filename = f"{base_name}[]报告.pdf"
+                        output_file = output_path / filename
                     
                     # 生成报告
                     if self.generate_single_report(row, str(output_file), image_dir):
@@ -572,14 +585,11 @@ class ReportGenerator:
                     else:
                         results["failed"] += 1
                         # 安全获取姓名用于错误信息
-                        error_name = safe_name if safe_name else "未知"
+                        error_name = base_name if base_name else "未知"
                         results["errors"].append(f"{error_name}: 生成失败")
                     
-                    # 更新进度 - 根据命名模式获取显示名称
-                    if filename_mode == "id_only":
-                        progress_name = safe_name
-                    else:
-                        progress_name = safe_name if safe_name else f"第{index + 1}个"
+                    # 更新进度 - 使用base_name作为显示名称
+                    progress_name = base_name if base_name else f"第{index + 1}个"
                     
                     if progress_callback:
                         progress = (index + 1) / results["total"] * 100
@@ -589,7 +599,7 @@ class ReportGenerator:
                     results["failed"] += 1
                     # 安全获取姓名用于错误信息
                     try:
-                        error_name = safe_name if 'safe_name' in locals() and safe_name else f"第{index + 1}个"
+                        error_name = base_name if 'base_name' in locals() and base_name else f"第{index + 1}个"
                     except:
                         error_name = f"第{index + 1}个"
                     

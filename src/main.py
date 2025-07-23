@@ -213,9 +213,9 @@ class ReportGeneratorGUI:
         filename_frame.grid(row=2, column=1, sticky=(tk.W, tk.E), padx=(10, 5), pady=2)
         
         # 命名模式选择
-        ttk.Radiobutton(filename_frame, text="使用ID号", variable=self.filename_mode_var, 
+        ttk.Radiobutton(filename_frame, text="ID[自定义内容]报告", variable=self.filename_mode_var, 
                        value="id_only").grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
-        ttk.Radiobutton(filename_frame, text="姓名+自定义内容+报告", variable=self.filename_mode_var, 
+        ttk.Radiobutton(filename_frame, text="姓名[自定义内容]报告", variable=self.filename_mode_var, 
                        value="name_custom").grid(row=0, column=1, sticky=tk.W)
         
         # 自定义内容输入框
@@ -224,7 +224,7 @@ class ReportGeneratorGUI:
         ttk.Label(custom_frame, text="自定义内容:").grid(row=0, column=0, sticky=tk.W)
         ttk.Entry(custom_frame, textvariable=self.filename_separator_var, width=20).grid(
             row=0, column=1, sticky=tk.W, padx=(5, 0))
-        ttk.Label(custom_frame, text="(仅在选择第二种模式时生效)").grid(
+        ttk.Label(custom_frame, text="(放在方括号[]中)").grid(
             row=0, column=2, sticky=tk.W, padx=(5, 0))
     
     def create_action_area(self, parent):
