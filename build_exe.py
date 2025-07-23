@@ -6,15 +6,15 @@
 
 项目信息:
 - 项目名称: 心理测试反馈报告生成器
-- 版本: 1.0.1
+- 版本: 1.0.2
 - 发布日期: 2025-07-22
 - Python版本要求: >=3.12（推荐使用Python 3.12.7）
 - 主要功能: 专业的心理测评数据分析工具，自动生成包含高质量雷达图的个性化PDF报告
 
 打包后目录结构:
 dist/
-└── PsychTestReportGenerator1.0.1/
-    ├── PsychTestReportGenerator1.0.1.exe    # 主程序可执行文件
+└── PsychTestReportGenerator1.0.2/
+    ├── PsychTestReportGenerator1.0.2.exe    # 主程序可执行文件
     ├── README.md                             # 详细使用说明（Markdown格式）
     ├── README.txt                            # 简要使用说明（文本格式）
     ├── config.json                           # 应用配置文件
@@ -33,10 +33,10 @@ dist/
 使用方法:
 1. 确保已安装Python 3.12环境并激活pyinstaller_env_py312环境
 2. 运行此脚本进行自动打包
-3. 打包完成后，整个PsychTestReportGenerator1.0.1文件夹即为完整的分发包
+3. 打包完成后，整个PsychTestReportGenerator1.0.2文件夹即为完整的分发包
 
 作者: AI Assistant
-版本: 1.0.1
+版本: 1.0.2
 """
 
 import os
@@ -70,7 +70,7 @@ class PyInstallerBuilder:
         if version_file.exists():
             with open(version_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        return {"version": "1.0.0", "name": "心理测试反馈报告生成器"}
+        return {"version": "1.0.2", "name": "心理测试反馈报告生成器"}
     
     def check_environment(self):
         """检查环境"""
@@ -270,7 +270,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='{self.version_info.get("name", "心理测试反馈报告生成器")}_v{self.version_info.get("version", "1.0.0")}',
+    name='{self.version_info.get("name", "心理测试反馈报告生成器")}_v{self.version_info.get("version", "1.0.2")}',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -352,7 +352,7 @@ exe = EXE(
         print("🧹 清理临时文件并组织目录结构...")
         
         # 创建版本化的目标目录
-        version = self.version_info.get("version", "1.0.1")
+        version = self.version_info.get("version", "1.0.2")
         target_dir = self.dist_dir / f"PsychTestReportGenerator{version}"
         target_dir.mkdir(exist_ok=True)
         
@@ -454,7 +454,7 @@ exe = EXE(
     
     def create_readme(self):
         """创建打包说明文件"""
-        version = self.version_info.get("version", "1.0.1")
+        version = self.version_info.get("version", "1.0.2")
         target_dir = self.dist_dir / f"PsychTestReportGenerator{version}"
         
         # 创建简要说明文件 (README.txt)

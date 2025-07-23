@@ -6,9 +6,9 @@
     "theme": "light"
   },
   "paths": {
-    "last_data_file": "E:/Desktop/幼儿结果反馈.xlsx",
+    "last_data_file": "",
     "last_image_dir": "",
-    "last_output_dir": "E:/Desktop/新建文件夹",
+    "last_output_dir": "",
     "default_output_dir": "./reports"
   },
   "report": {

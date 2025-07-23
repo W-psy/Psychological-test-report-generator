@@ -2,7 +2,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)](version.json)
+[![Version](https://img.shields.io/badge/version-1.0.2-orange.svg)](version.json)
 
 专业的心理测评数据分析工具，自动生成包含高质量雷达图的个性化PDF报告。
 
@@ -86,6 +86,19 @@ psychological-test-report-generator/
 - 数据处理参数
 
 ## 📝 更新日志
+
+### v1.0.2 (2025-07-22)
+- ✅ **自定义文件名功能** - 支持ID号和姓名两种命名模式
+- ✅ **灵活命名配置** - 用户可自定义文件名中间部分内容
+- ✅ **智能文件名生成** - 自动处理特殊字符和文件名冲突
+- ✅ **增强用户界面** - 新增文件命名设置区域
+- 📝 **文档更新** - 针对GUI软件使用方式更新所有文档
+
+### v1.0.1 (2025-07-22)
+- ✅ **扩展评分模式** - 新增6档和7档评分模式支持
+- ✅ **多列配置支持** - 支持12列（6档）和14列（7档）Excel配置
+- ✅ **自定义结果说明** - 支持用户自定义结果声明文本
+- 📝 **完善文档** - 更新支持2-7档评分模式说明
 
 ### v1.0.0 (2025-07-21)
 - 🎉 初始版本发布
