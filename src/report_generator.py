@@ -503,9 +503,9 @@ class ReportGenerator:
             image_dir: 图片目录路径（可选，用于向后兼容）
             progress_callback: 进度回调函数
             filename_mode: 文件命名模式 
-                - "id_only": ID自定义内容报告.pdf
-                - "name_custom": 姓名自定义内容报告.pdf（如果姓名为空则使用ID）
-            filename_separator: 自定义内容（直接连接在名称后面）
+                - "id_only": 实际生成 ID自定义内容报告.pdf（GUI显示为ID[自定义内容]报告）
+                - "name_custom": 实际生成 姓名自定义内容报告.pdf（GUI显示为姓名[自定义内容]报告，如果姓名为空则使用ID）
+            filename_separator: 自定义内容（在GUI中显示在[]中，实际文件名直接连接）
             
         Returns:
             Dict: 生成结果统计
