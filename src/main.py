@@ -118,8 +118,8 @@ class ReportGeneratorGUI:
         self.disclaimer_var = tk.StringVar(value="测试结果与受试者当时的状态有关，良好状态下的评估结果更可靠。")
         
         # 新增：文件命名设置
-        self.filename_mode_var = tk.StringVar(value="name_custom")  # "id_only" 或 "name_custom"
-        self.filename_separator_var = tk.StringVar(value="心理测评")  # 自定义分隔符
+        self.filename_mode_var = tk.StringVar(value="id_only")  # "id_only" 或 "name_custom"
+        self.filename_separator_var = tk.StringVar(value="")  # 自定义分隔符
         
         # 生成状态
         self.is_generating = False
