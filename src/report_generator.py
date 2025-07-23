@@ -503,9 +503,9 @@ class ReportGenerator:
             image_dir: 图片目录路径（可选，用于向后兼容）
             progress_callback: 进度回调函数
             filename_mode: 文件命名模式 
-                - "id_only": ID[自定义内容]报告.pdf
-                - "name_custom": 姓名[自定义内容]报告.pdf（如果姓名为空则使用ID）
-            filename_separator: 自定义内容（放在方括号[]中）
+                - "id_only": ID自定义内容报告.pdf
+                - "name_custom": 姓名自定义内容报告.pdf（如果姓名为空则使用ID）
+            filename_separator: 自定义内容（直接连接在名称后面）
             
         Returns:
             Dict: 生成结果统计
@@ -541,7 +541,7 @@ class ReportGenerator:
                 try:
                     # 根据命名模式生成文件名
                     if filename_mode == "id_only":
-                        # 模式1：ID[自定义内容]报告
+                        # 模式1：ID自定义内容报告
                         id_value = row.get('ID', '')
                         if pd.notna(id_value) and str(id_value).strip():
                             base_name = str(id_value).strip()
@@ -549,15 +549,15 @@ class ReportGenerator:
                             # 如果ID为空，使用行号
                             base_name = f"报告_{index + 1}"
                         
-                        # 构建文件名：ID[自定义内容]报告.pdf
+                        # 构建文件名：ID自定义内容报告.pdf
                         custom_content = filename_separator.strip() if filename_separator.strip() else ""
                         if custom_content:
-                            filename = f"{base_name}[{custom_content}]报告.pdf"
+                            filename = f"{base_name}{custom_content}报告.pdf"
                         else:
-                            filename = f"{base_name}[]报告.pdf"
+                            filename = f"{base_name}报告.pdf"
                         output_file = output_path / filename
                     else:
-                        # 模式2：姓名[自定义内容]报告
+                        # 模式2：姓名自定义内容报告
                         name_value = row.get('姓名', '')
                         if pd.isna(name_value) or not str(name_value).strip():
                             # 如果姓名为空，使用ID
@@ -571,12 +571,12 @@ class ReportGenerator:
                             if not base_name:  # 如果处理后为空
                                 base_name = f"报告_{index + 1}"
                         
-                        # 构建文件名：姓名[自定义内容]报告.pdf
+                        # 构建文件名：姓名自定义内容报告.pdf
                         custom_content = filename_separator.strip() if filename_separator.strip() else ""
                         if custom_content:
-                            filename = f"{base_name}[{custom_content}]报告.pdf"
+                            filename = f"{base_name}{custom_content}报告.pdf"
                         else:
-                            filename = f"{base_name}[]报告.pdf"
+                            filename = f"{base_name}报告.pdf"
                         output_file = output_path / filename
                     
                     # 生成报告
